@@ -1,0 +1,155 @@
+﻿disp('Enter integars in the following')
+sf=input("Enter sampling frequency: ");
+st=input("Enter start time :");
+et=input("Enter end time: ");
+bp=input("Enter Number Break points: ");
+A=[];
+signal=[];
+y=[];
+if bp==0
+    sig=menu('Choose the signal type ', 'DC', 'Ramp', 'General Order Polynomial', 'Exponential', 'Sinusoidal');
+    S=(sf.*(et-st)) ;       %sampling freqency
+    t=linspace(st,et,S);      %region time
+
+
+switch sig
+    case 1
+        amp1=input("Enter the amplitude ");
+         y=amp1*ones(1,S);     
+    case 2  
+        slope=input("Enter the slope :");
+        intercept=input("Enter the intercept :");
+        y=(slope*t)+intercept; 
+    case 3
+        power=input("Enter the power :");
+        intercept=input("Enter the intercept :");
+        amp=[];
+        for h=1:power
+            amp(end+1)=input("Enter The Amplitude :");
+        end
+        y=amp(1)*t.^1;
+        for v=2:power
+            y=y+amp(v)*t.^(v);
+        end 
+        y=y+intercept; 
+    case 4
+        amp4=input("Enter the amplitude :");
+        exponent=input("Enter the exponent :");
+        y=amp4*exp(exponent*t);
+    case 5     
+        amp5=input("Enter the amplitude :");
+        freq=input("Enter the frequency :");
+        phase=input("Enter the phase :")  ;
+        y=amp5*sin(2*pi*freq*t+phase);
+        
+    otherwise
+end
+signal=[signal y];
+
+
+signal_time=linspace(st,et,(et-st)*sf);
+plot(signal_time,signal)
+else
+disp('Enter positions of break points between start time& end time')
+for i=1:bp
+A(i)=input("Enter position of break point: ");
+end 
+
+
+starttime=[];
+endtime=[];
+starttime(1)=st;
+lastregion=bp+1;
+
+
+for k=1:lastregion
+    if k==lastregion
+        endtime(k)=et;
+        starttime(i)=A(k-1);
+    else
+        starttime(k+1)=A(k);
+        endtime(k)=A(k);
+    end
+a=starttime(k);
+b=endtime(k);
+
+
+sig=menu('Choose signal type ', 'DC', 'Ramp', 'General Order Polynomial', 'Exponential', 'Sinusoidal');
+ S=(sf.*(b-a)) ;       %sampling freqency
+ t=linspace(a,b,S);    %region time
+
+
+switch sig
+    case 1
+        amp1=input("Enter the amplitude ");
+         y=amp1*ones(1,S);     
+    case 2  
+        slope=input("Enter the slope :");
+        intercept=input("Enter the intercept :");
+        y=(slope*t)+intercept; 
+    case 3
+        power=input("Enter the power :");
+        intercept=input("Enter the intercept :");
+        amp=[];
+        for h=1:power
+            amp(end+1)=input("Enter The Amplitude :");
+        end
+        y=amp(1)*t.^1;
+        for v=2:power
+            y=y+amp(v)*t.^(v);
+        end 
+        y=y+intercept; 
+    case 4
+        amp4=input("Enter the amplitude :");
+        exponent=input("Enter the exponent :");
+        y=amp4*exp(exponent*t);
+    case 5     
+        amp5=input("Enter the amplitude :");
+        freq=input("Enter the frequency :");
+        phase=input("Enter the phase :")  ;
+        y=amp5*sin(2*pi*freq*t+phase);
+        
+    otherwise
+end
+signal=[signal y];
+end
+signal_time=linspace(st,et,(et-st)*sf);
+plot(signal_time,signal)
+end
+
+
+%%signal operations
+op=input("Enter Number of wanted operations to be preformed (if NONE enter 0): ");
+if op==0
+    disp('No operations to be performed on the signal');
+else
+    for i=1:1:op
+        ops=menu('Choose the wanted operation', 'Amplitude scaling', 'Time reversal', 'Time shift', 'Expanding the signal', 'Compressing the signal');   
+    switch ops
+        case 1
+          sv=input("Enter the scale value: ");
+          signal=signal.*sv;
+        case 2
+            signal_time = -signal_time;
+        case 3
+         ts=input("Enter the shift value: ");   
+            signal_time = signal_time + ts;
+        case 4
+         te=input("Enter the Expanding value: ");
+         while te<=0 || te>=1
+             disp(" invalid input...must be 0< and >1 ");
+             te=input("Enter the Expanding value: ");
+         end 
+         signal_time = signal_time / te;
+        case 5
+         tc=input("Enter the Compressing value: ");
+         while tc<=1
+             disp(" invalid input...must be >1 ");
+             te=input("Enter the Compressing value: ");
+         end 
+         signal_time = signal_time / tc;   
+    end
+    end
+    figure;
+    plot(signal_time,signal)
+end
